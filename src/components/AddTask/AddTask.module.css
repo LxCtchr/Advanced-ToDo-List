@@ -1,0 +1,29 @@
+.addTaskForm {
+  display: flex;
+  padding-block: 0.5rem;
+}
+
+.taskTitle {
+  flex-grow: 1;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  min-width: 0;
+  margin-inline-end: 0.8rem;
+  padding-inline-start: 0.8rem;
+  border-bottom: 1px solid grey;
+}
+
+.button {
+  cursor: pointer;
+  background-color: rgb(76, 112, 255);
+  color: white;
+  padding: 0.625rem 1rem;
+  border-radius: 7px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.editTaskTitle:focus {
+  outline: none;
+}
