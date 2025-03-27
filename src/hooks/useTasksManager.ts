@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getTasks } from "../api";
 import { DEFAULT_RESPONSE } from "../consts";
 import { Filter, MetaResponse } from "../types";
@@ -7,17 +7,17 @@ export const useTasksManager = () => {
   const [metaData, setMetaData] = useState<MetaResponse>(DEFAULT_RESPONSE);
   const [filter, setFilter] = useState<Filter>("all");
 
-  const updateTasks = async () => {
+  const updateTasks = useCallback(async () => {
     const newMetaData = await getTasks(filter);
 
     if (newMetaData) {
       setMetaData(newMetaData);
     }
-  };
+  }, [filter]);
 
   useEffect(() => {
     updateTasks();
-  }, [filter]);
+  }, [updateTasks]);
 
   return {
     tasks: metaData.data,

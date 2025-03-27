@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useAddTasks } from "../../hooks";
 import { Form } from "../Form/Form";
 import styles from "./AddTask.module.css";
@@ -6,7 +7,7 @@ interface AddTaskProps {
   updateTasks: () => Promise<void>;
 }
 
-export const AddTask = ({ updateTasks }: AddTaskProps) => {
+export const AddTask = memo(({ updateTasks }: AddTaskProps) => {
   const { handleCreateTask } = useAddTasks({ updateTasks });
 
   return (
@@ -24,4 +25,4 @@ export const AddTask = ({ updateTasks }: AddTaskProps) => {
       </Form>
     </section>
   );
-};
+});
