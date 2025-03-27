@@ -28,12 +28,6 @@
   flex-shrink: 0;
 }
 
-.editTaskTitle,
-.editTaskTitle:focus {
-  border-bottom: 1px solid grey;
-  outline: none;
-}
-
 .checkbox[type="checkbox"] {
   cursor: pointer;
   font: inherit;

@@ -13,9 +13,9 @@ export interface TaskInfo {
 
 export type Filter = keyof TaskInfo;
 
-export interface MetaResponse {
-  data: Task[];
-  info: TaskInfo;
+export interface MetaResponse<T, N> {
+  data: T[];
+  info: N;
   meta: {
     totalAmount: number;
   };

@@ -1,7 +1,7 @@
-import { BASE_URL } from "../consts";
-import { Filter, MetaResponse, UpdatedTask } from "../types";
+import { BASE_URL } from "../constants";
+import { Filter, MetaResponse, Task, TaskInfo, UpdatedTask } from "../types";
 
-export const getTasks = async (filter: Filter): Promise<MetaResponse | undefined> => {
+export const getTasks = async (filter: Filter): Promise<MetaResponse<Task, TaskInfo> | undefined> => {
   try {
     const response = await fetch(`${BASE_URL}/todos?filter=${filter}`, { method: "GET" });
 
@@ -9,7 +9,7 @@ export const getTasks = async (filter: Filter): Promise<MetaResponse | undefined
       throw new Error("Ошибка при получении задач");
     }
 
-    const metaData: MetaResponse = await response.json();
+    const metaData: MetaResponse<Task, TaskInfo> = await response.json();
 
     return metaData;
   } catch (error) {

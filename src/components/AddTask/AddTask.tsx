@@ -1,6 +1,6 @@
 import { memo } from "react";
-import { useAddTasks } from "../../hooks";
-import { Form } from "../Form/Form";
+import { createTask } from "../../api";
+import { TasksForm } from "../TasksForm/TasksForm";
 import styles from "./AddTask.module.css";
 
 interface AddTaskProps {
@@ -8,21 +8,17 @@ interface AddTaskProps {
 }
 
 export const AddTask = memo(({ updateTasks }: AddTaskProps) => {
-  const { handleCreateTask } = useAddTasks({ updateTasks });
+  const handleCreateTask = async (title: string) => {
+    await createTask(title);
+    await updateTasks();
+  };
 
   return (
     <section className={styles.addTaskForm}>
-      <Form taskActionCallback={handleCreateTask}>
-        <input
-          type="text"
-          name="title"
-          className={`${styles.editTaskTitle} ${styles.taskTitle}`}
-          placeholder="Напишите задачу"
-        />
-        <button type="submit" className={styles.button}>
-          Добавить
-        </button>
-      </Form>
+      <TasksForm taskActionCallback={handleCreateTask} formId="taskForm" />
+      <button type="submit" form="taskForm" className={styles.button}>
+        Добавить
+      </button>
     </section>
   );
 });

@@ -1,4 +1,4 @@
-import { FILTERS } from "../../consts";
+import { FILTERS } from "../../constants";
 import { Filter, TaskInfo } from "../../types";
 import styles from "./TasksFilters.module.css";
 
