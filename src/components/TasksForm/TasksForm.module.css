@@ -1,0 +1,19 @@
+.form {
+  display: flex;
+  flex-grow: 1;
+}
+
+.taskTitle {
+  flex-grow: 1;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  min-width: 0;
+  margin-inline: 1rem 0.3rem;
+}
+
+.editTaskTitle,
+.editTaskTitle:focus {
+  border-bottom: 1px solid grey;
+  outline: none;
+}
