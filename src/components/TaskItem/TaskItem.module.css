@@ -1,10 +1,8 @@
 .task {
-  display: flex;
   background-color: white;
-  padding: 0.625rem 1rem;
   border-radius: 5px;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-  align-items: center;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 0px 12px 0px;
+  margin-block-end: 1rem;
 }
 
 .taskTitle {
@@ -22,53 +20,11 @@
 }
 
 .buttons {
-  display: flex;
   gap: 0.5rem;
   white-space: nowrap;
   flex-shrink: 0;
 }
 
-.checkbox[type="checkbox"] {
-  cursor: pointer;
-  font: inherit;
-  background-color: inherit;
-  appearance: none;
-  padding: 0;
-  margin: 0;
-  width: 1.5rem;
-  height: 1.5rem;
-  border: 0.15rem solid #4c70ff;
-  border-radius: 50%;
-  display: grid;
-  place-content: center;
-  &:checked {
-    background-color: #4c70ff;
-    background-image: url("../../assets/done.svg");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
-}
-
-.icon {
-  width: 16px;
-  height: 16px;
-}
-
-.button {
-  cursor: pointer;
-  border-radius: 5px;
-  padding: 0.6rem;
-}
-
-.saveButton {
-  background-color: green;
-}
-
-.editButton {
-  background-color: #4c70ff;
-}
-
-.deleteButton {
-  background-color: rgb(188, 14, 14);
+.checkbox {
+  flex-shrink: 0;
 }

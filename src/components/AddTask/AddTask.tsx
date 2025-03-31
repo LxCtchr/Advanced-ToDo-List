@@ -1,3 +1,4 @@
+import { Button, Flex } from "antd";
 import { memo } from "react";
 import { createTask } from "../../api";
 import { TasksForm } from "../TasksForm/TasksForm";
@@ -14,11 +15,11 @@ export const AddTask = memo(({ updateTasks }: AddTaskProps) => {
   };
 
   return (
-    <section className={styles.addTaskForm}>
+    <Flex>
       <TasksForm taskActionCallback={handleCreateTask} formId="taskForm" />
-      <button type="submit" form="taskForm" className={styles.button}>
+      <Button color="primary" variant="solid" htmlType="submit" form="taskForm" className={styles.button}>
         Добавить
-      </button>
-    </section>
+      </Button>
+    </Flex>
   );
 });

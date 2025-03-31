@@ -1,14 +1,4 @@
-.addTaskForm {
-  display: flex;
-  padding-block: 0.5rem;
-}
-
 .button {
-  cursor: pointer;
-  background-color: rgb(76, 112, 255);
-  color: white;
-  padding: 0.625rem 1rem;
-  border-radius: 7px;
   white-space: nowrap;
   flex-shrink: 0;
 }

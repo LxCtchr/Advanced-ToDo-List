@@ -1,6 +1,9 @@
+import { Flex, Typography } from "antd";
 import { FILTERS } from "../../constants";
 import { Filter, TaskInfo } from "../../types";
 import styles from "./TasksFilters.module.css";
+
+const { Text } = Typography;
 
 interface TasksFiltersProps {
   filter: Filter;
@@ -10,16 +13,17 @@ interface TasksFiltersProps {
 
 export const TasksFilters = ({ filter, setFilter, tasksInfo }: TasksFiltersProps) => {
   return (
-    <section className={styles.filters}>
+    <Flex className={styles.filters}>
       {(Object.keys(FILTERS) as Filter[]).map((currentFilter, index) => (
-        <button
+        <Text
           key={`${currentFilter}-${index}`}
           onClick={() => setFilter(currentFilter)}
           className={`${styles.button} ${filter === currentFilter ? styles.active : ""}`}
+          style={{ fontSize: "1.2rem" }}
         >
           {`${FILTERS[currentFilter]} (${tasksInfo[currentFilter]})`}
-        </button>
+        </Text>
       ))}
-    </section>
+    </Flex>
   );
 };

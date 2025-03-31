@@ -1,9 +1,9 @@
+import { List } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { getTasks } from "../../api";
 import { AddTask, TaskItem, TasksFilters } from "../../components";
 import { DEFAULT_RESPONSE } from "../../constants";
 import { Filter, MetaResponse, Task, TaskInfo } from "../../types";
-import styles from "./TodoListPage.module.css";
 
 export const TodoListPage = () => {
   const [metaData, setMetaData] = useState<MetaResponse<Task, TaskInfo>>(DEFAULT_RESPONSE);
@@ -19,23 +19,23 @@ export const TodoListPage = () => {
 
   useEffect(() => {
     updateTasks();
+
+    const interval = setInterval(updateTasks, 5000);
+
+    return () => clearInterval(interval);
   }, [updateTasks]);
 
   const { data: tasks, info: tasksInfo } = metaData;
 
   return (
-    <main>
-      <div className={styles.wrapper}>
-        <AddTask updateTasks={updateTasks} />
-        <TasksFilters filter={filter} setFilter={setFilter} tasksInfo={tasksInfo} />
-        <section>
-          <ul className={styles.taskList}>
-            {tasks.map((task) => (
-              <TaskItem key={task.id} task={task} updateTasks={updateTasks} />
-            ))}
-          </ul>
-        </section>
-      </div>
-    </main>
+    <>
+      <AddTask updateTasks={updateTasks} />
+      <TasksFilters filter={filter} setFilter={setFilter} tasksInfo={tasksInfo} />
+      <List
+        dataSource={tasks}
+        renderItem={(task) => <TaskItem task={task} updateTasks={updateTasks} />}
+        rowKey={(task) => task.id}
+      />
+    </>
   );
 };

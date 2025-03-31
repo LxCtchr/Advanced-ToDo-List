@@ -1,16 +1,14 @@
 .filters {
-  display: flex;
   justify-content: space-between;
   margin-block: 0.5rem 1rem;
-  font-size: 1.4rem;
 }
 
 .button {
-  padding: 0.2rem;
+  padding: 0.3rem;
   cursor: pointer;
 }
 
 .active {
-  color: rgb(12, 139, 139);
+  color: #1677ff;
   text-decoration: underline;
 }

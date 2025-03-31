@@ -1,17 +1,13 @@
-import { BASE_URL } from "../constants";
 import { Filter, MetaResponse, Task, TaskInfo, UpdatedTask } from "../types";
+import { defaultInstance } from "./axios";
 
 export const getTasks = async (filter: Filter): Promise<MetaResponse<Task, TaskInfo> | undefined> => {
   try {
-    const response = await fetch(`${BASE_URL}/todos?filter=${filter}`, { method: "GET" });
+    const response = await defaultInstance.get<MetaResponse<Task, TaskInfo>>("/todos", {
+      params: { filter },
+    });
 
-    if (!response.ok) {
-      throw new Error("Ошибка при получении задач");
-    }
-
-    const metaData: MetaResponse<Task, TaskInfo> = await response.json();
-
-    return metaData;
+    return response.data;
   } catch (error) {
     console.error(error);
   }
@@ -19,14 +15,7 @@ export const getTasks = async (filter: Filter): Promise<MetaResponse<Task, TaskI
 
 export const createTask = async (title: string) => {
   try {
-    const response = await fetch(`${BASE_URL}/todos`, {
-      method: "POST",
-      body: JSON.stringify({ title, isDone: false }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Ошибка при создании задачи");
-    }
+    await defaultInstance.post("/todos", { title, isDone: false });
   } catch (error) {
     console.error(error);
   }
@@ -34,13 +23,7 @@ export const createTask = async (title: string) => {
 
 export const deleteTask = async (id: number) => {
   try {
-    const response = await fetch(`${BASE_URL}/todos/${id}`, {
-      method: "DELETE",
-    });
-
-    if (!response.ok) {
-      throw new Error("Ошибка при удалении задачи");
-    }
+    await defaultInstance.delete(`/todos/${id}`);
   } catch (error) {
     console.error(error);
   }
@@ -48,14 +31,7 @@ export const deleteTask = async (id: number) => {
 
 export const editTask = async ({ id, title, isDone }: UpdatedTask) => {
   try {
-    const response = await fetch(`${BASE_URL}/todos/${id}`, {
-      method: "PUT",
-      body: JSON.stringify({ title, isDone }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Ошибка при сохранении задачи");
-    }
+    await defaultInstance.put(`/todos/${id}`, { title, isDone });
   } catch (error) {
     console.error(error);
   }
