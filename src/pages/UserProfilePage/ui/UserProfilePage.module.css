@@ -1,0 +1,13 @@
+.buttons {
+  flex-grow: 1;
+  width: 100%;
+  max-width: 100%;
+}
+
+.button {
+  width: 33%;
+}
+
+.text {
+  font-size: 1rem;
+}
