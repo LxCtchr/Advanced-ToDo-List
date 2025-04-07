@@ -1,1 +1,1 @@
-export * from "./PagesSider/PagesSider";
+export { PagesSider } from "./PagesSider/ui";

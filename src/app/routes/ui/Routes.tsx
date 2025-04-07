@@ -1,4 +1,4 @@
-import { AuthLayout } from "@/features/Authorization";
+import { AuthLayout } from "@/features";
 import { LoginPage, NotFoundPage, RegistrationPage, TodoListPage, UserProfilePage } from "@/pages";
 import { createBrowserRouter, Navigate } from "react-router";
 import { ProtectedLayout } from "./ProtectedLayout";

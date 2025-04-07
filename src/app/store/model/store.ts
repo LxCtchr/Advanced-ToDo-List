@@ -1,7 +1,5 @@
-import { tasksApi } from "@/entities/Task";
-import { userApi, userReducer } from "@/entities/User";
-import { authReducer } from "@/features/Authorization";
-import { authApi } from "@/features/Authorization/api";
+import { tasksApi, userApi, userReducer } from "@/entities";
+import { authApi, authReducer } from "@/features";
 import { configureStore } from "@reduxjs/toolkit";
 
 export const store = configureStore({
