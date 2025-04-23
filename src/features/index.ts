@@ -9,3 +9,12 @@ export { AuthLayout } from "./Authorize/ui/AuthLayout";
 export { registerApi, useRegisterMutation } from "./Register/api";
 export * from "./Register/model/types";
 export { registerValidationRules } from "./Register/model/validation";
+
+export {
+  adminApi,
+  useDeleteUserMutation,
+  useGetUserByIdQuery,
+  useGetUsersQuery,
+  useLazyGetUserByIdQuery,
+} from "./Administer/api";
+export * from "./Administer/model/types";

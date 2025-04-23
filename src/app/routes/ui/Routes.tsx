@@ -1,6 +1,7 @@
 import { AuthLayout } from "@/features";
 import { LoginPage, NotFoundPage, RegistrationPage, TodoListPage, UserProfilePage } from "@/pages";
 import { createBrowserRouter, Navigate } from "react-router";
+import { UsersPage } from "../../../pages/UsersPage/ui";
 import { ProtectedLayout } from "./ProtectedLayout";
 
 export const router = createBrowserRouter([
@@ -25,12 +26,16 @@ export const router = createBrowserRouter([
     element: <ProtectedLayout />,
     children: [
       {
-        path: "/profile",
+        path: "/profile/:id",
         element: <UserProfilePage />,
       },
       {
         path: "/todo",
         element: <TodoListPage />,
+      },
+      {
+        path: "admin/users",
+        element: <UsersPage />,
       },
     ],
   },

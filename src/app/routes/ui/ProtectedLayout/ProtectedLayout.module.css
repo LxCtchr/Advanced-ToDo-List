@@ -1,8 +1,8 @@
 .content {
-  margin-inline-start: 0.7rem;
+  margin-inline-start: 0.4rem;
 }
 
 .wrapper {
-  max-inline-size: 800px;
+  max-inline-size: 1200px;
   margin-inline: auto;
 }

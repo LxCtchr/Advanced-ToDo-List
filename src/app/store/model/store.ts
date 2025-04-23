@@ -1,5 +1,5 @@
 import { tasksApi, userApi, userReducer } from "@/entities";
-import { authApi, authReducer } from "@/features";
+import { adminApi, authApi, authReducer } from "@/features";
 import { configureStore } from "@reduxjs/toolkit";
 
 export const store = configureStore({
@@ -9,8 +9,14 @@ export const store = configureStore({
     [tasksApi.reducerPath]: tasksApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
+    [adminApi.reducerPath]: adminApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware().concat(tasksApi.middleware, authApi.middleware, userApi.middleware);
+    return getDefaultMiddleware().concat(
+      tasksApi.middleware,
+      authApi.middleware,
+      userApi.middleware,
+      adminApi.middleware
+    );
   },
 });
