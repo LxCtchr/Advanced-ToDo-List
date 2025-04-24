@@ -8,13 +8,17 @@ const { Sider } = Layout;
 
 export const PagesSider = () => {
   const currentUser = useAppSelector((state) => state.user.currentUser);
+  const isAdmin = useAppSelector((state) => state.admin.isAdmin);
 
   const PAGES = [
     { path: "/todo", name: "Список задач" },
-    // Почему через replace
+    // Почему через replace - убрать
     { path: "/profile/:id".replace(":id", String(currentUser?.id)), name: "Профиль" },
-    { path: "/admin/users", name: "Админка" },
   ];
+
+  if (isAdmin) {
+    PAGES.push({ path: "/admin/users", name: "Пользователи" });
+  }
 
   return (
     <Sider className={styles.sider}>

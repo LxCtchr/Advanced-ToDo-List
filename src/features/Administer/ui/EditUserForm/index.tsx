@@ -1,0 +1,60 @@
+import { useNotification } from "@/shared";
+import { Button, Flex, Form, Input } from "antd";
+import { isEqual } from "lodash";
+import { useEditUserMutation } from "../../api";
+import { getChangedValues } from "../../model/helpers";
+import { UserRequest } from "../../model/types";
+
+interface EditUserFormProps {
+  userId: string | undefined;
+  cancelEditing: () => void;
+  initialValues: UserRequest;
+}
+
+export const EditUserForm = ({ userId, initialValues, cancelEditing }: EditUserFormProps) => {
+  const [editUser] = useEditUserMutation();
+
+  const notification = useNotification();
+
+  const handleSubmitEdit = async (formValues: UserRequest) => {
+    if (isEqual(initialValues, formValues)) {
+      cancelEditing();
+      return;
+    }
+
+    try {
+      const useEditData = getChangedValues({ initialValues, formValues });
+
+      await editUser({ id: userId ?? "", userData: useEditData }).unwrap();
+      await cancelEditing();
+      notification.success({ message: "Успешно", description: "Данные пользователя успешно обновлены" });
+    } catch {
+      notification.error({
+        message: "Ошибка",
+        description: "Не удалось обновить данные пользователя. Попробуйте позже.",
+      });
+    }
+  };
+
+  return (
+    <Form<UserRequest> initialValues={initialValues} onFinish={handleSubmitEdit}>
+      <Form.Item<UserRequest> name="username">
+        <Input />
+      </Form.Item>
+      <Form.Item<UserRequest> name="email">
+        <Input />
+      </Form.Item>
+      <Form.Item<UserRequest> name="phoneNumber">
+        <Input />
+      </Form.Item>
+      <Flex gap="0.4rem">
+        <Form.Item>
+          <Button htmlType="submit">Сохранить</Button>
+        </Form.Item>
+        <Form.Item>
+          <Button onClick={cancelEditing}>Отмена</Button>
+        </Form.Item>
+      </Flex>
+    </Form>
+  );
+};

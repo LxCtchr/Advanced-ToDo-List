@@ -1,33 +1,40 @@
 import { sessionService, useLogoutMutation } from "@/entities";
-import { useGetUserByIdQuery } from "@/features";
+import { EditUserForm, useGetUserByIdQuery, UserRequest } from "@/features";
 import { useAppSelector, useNotification } from "@/shared";
 import { Alert, Button, Flex, Spin, Typography } from "antd";
 import { format, parseISO } from "date-fns";
+import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
 import styles from "./UserProfilePage.module.css";
 
 const { Title, Text } = Typography;
 
 export const UserProfilePage = () => {
+  const [isEditing, setIsEditing] = useState(false);
+
   const currentUser = useAppSelector((state) => state.user.currentUser);
+  const isAdmin = useAppSelector((state) => state.admin.isAdmin);
 
-  const locate = useLocation();
+  const location = useLocation();
   const { id } = useParams<{ id: string }>();
-  const isAdmin = locate.state?.isAdmin ?? false;
+  const navigate = useNavigate();
 
-  const { data: userData, isLoading } = useGetUserByIdQuery(id ?? "", {
+  const isFromAdminPage = location.state?.isFromAdminPage ?? false;
+
+  const {
+    data: userData,
+    isLoading,
+    isFetching,
+  } = useGetUserByIdQuery(id ?? "", {
     refetchOnMountOrArgChange: true,
   });
+  const [logout] = useLogoutMutation();
 
   const user = isAdmin ? userData : currentUser;
 
-  const [logout] = useLogoutMutation();
-
   const notification = useNotification();
 
-  const navigate = useNavigate();
-
-  if (isLoading)
+  if (isLoading || isFetching)
     return (
       <Flex justify="center" style={{ marginBlockStart: "1rem" }}>
         <Spin />
@@ -36,11 +43,13 @@ export const UserProfilePage = () => {
 
   if (!user) return <Alert message="Ошибка загрузки профиля" type="error" />;
 
+  const isAdminProfilePage = id === String(currentUser?.id);
+
   const handleLogout = async () => {
     try {
       await logout().unwrap();
       sessionService.clearTokens();
-      navigate("/login");
+      window.location.reload();
     } catch {
       notification.error({
         message: "Ошибка",
@@ -53,42 +62,77 @@ export const UserProfilePage = () => {
     navigate("/admin/users");
   };
 
+  const handleEditUser = () => {
+    setIsEditing(true);
+  };
+
+  const handleCancelEditUser = () => {
+    setIsEditing(false);
+  };
+
+  const userInitialValues: UserRequest = {
+    username: user.username,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
+  };
+
   return (
     <Flex vertical gap="0.5rem">
-      <Title level={2}>Профиль пользователя</Title>
+      {isEditing ? (
+        <>
+          <Title level={2}>Редактирование профиля</Title>
+          <EditUserForm userId={id} cancelEditing={handleCancelEditUser} initialValues={userInitialValues} />
+        </>
+      ) : (
+        <>
+          <Title level={2}>Профиль пользователя</Title>
 
-      {isAdmin && (
-        <Text className={styles.text}>
-          <b>ID пользователя</b>: {user.id}
-        </Text>
+          {isAdmin && (
+            <Text className={styles.text}>
+              <b>ID пользователя</b>: {user.id}
+            </Text>
+          )}
+          <Text className={styles.text}>
+            <b>Имя</b>: {user.username}
+          </Text>
+          <Text className={styles.text}>
+            <b>Email</b>: {user.email}
+          </Text>
+          <Text className={styles.text}>
+            <b>Телефон</b>: {user.phoneNumber || "Отсутствует"}
+          </Text>
+          <Text className={styles.text}>
+            <b>Дата регистрации</b>: {format(parseISO(user.date), "dd.MM.yyyy")}
+          </Text>
+          <Text className={styles.text}>
+            <b>Статус</b>: {user.isBlocked ? "Заблокирован" : "Активен"}
+          </Text>
+
+          <Flex gap="0.4rem" className={styles.buttons}>
+            {isAdmin ? (
+              <>
+                <Button color="primary" variant="solid" className={styles.button} onClick={handleEditUser}>
+                  Редактировать
+                </Button>
+                {isAdminProfilePage && (
+                  <Button color="primary" variant="solid" className={styles.button} onClick={handleLogout}>
+                    Выйти
+                  </Button>
+                )}
+                {isFromAdminPage && (
+                  <Button color="primary" variant="solid" className={styles.button} onClick={handleGoBack}>
+                    Назад
+                  </Button>
+                )}
+              </>
+            ) : (
+              <Button color="primary" variant="solid" className={styles.button} onClick={handleLogout}>
+                Выйти
+              </Button>
+            )}
+          </Flex>
+        </>
       )}
-      <Text className={styles.text}>
-        <b>Имя</b>: {user.username}
-      </Text>
-      <Text className={styles.text}>
-        <b>Email</b>: {user.email}
-      </Text>
-      <Text className={styles.text}>
-        <b>Телефон</b>: {user.phoneNumber || "Отсутствует"}
-      </Text>
-      <Text className={styles.text}>
-        <b>Дата регистрации</b>: {format(parseISO(user.date), "dd.MM.yyyy")}
-      </Text>
-      <Text className={styles.text}>
-        <b>Статус</b>: {user.isBlocked ? "Заблокирован" : "Активен"}
-      </Text>
-
-      <Flex className={styles.buttons}>
-        {isAdmin ? (
-          <Button color="primary" variant="solid" className={styles.button} onClick={handleGoBack}>
-            Назад
-          </Button>
-        ) : (
-          <Button color="primary" variant="solid" className={styles.button} onClick={handleLogout}>
-            Выйти
-          </Button>
-        )}
-      </Flex>
     </Flex>
   );
 };

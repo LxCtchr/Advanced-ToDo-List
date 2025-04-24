@@ -1,22 +1,30 @@
-import { UserProfile, UserRoles } from "@/entities";
+import { Roles, UserProfile } from "@/entities";
 import { useDeleteUserMutation, useGetUsersQuery } from "@/features";
+import { useDebounce } from "@/shared";
 import { CheckCircleOutlined, StopOutlined } from "@ant-design/icons";
-import { Alert, Button, Flex, Popconfirm, Spin, Tag } from "antd";
+import { Alert, Button, Flex, Form, Input, Popconfirm, Spin, Tag } from "antd";
 import Table, { ColumnsType } from "antd/es/table";
 import { format, parseISO } from "date-fns";
+import { ChangeEvent, useState } from "react";
 import { useNavigate } from "react-router";
 // import styles from "./UsersPage.module.css";
 
 export const UsersPage = () => {
-  const { data, isError, isLoading } = useGetUsersQuery(undefined, { refetchOnMountOrArgChange: true });
-
-  const [deleteUser] = useDeleteUserMutation();
+  const [searchQuery, setSearchQuery] = useState<string | undefined>();
 
   const navigate = useNavigate();
 
+  const debouncedQuery = useDebounce(searchQuery);
+
+  const { data, isError, isLoading, isFetching } = useGetUsersQuery(
+    { search: debouncedQuery },
+    { refetchOnMountOrArgChange: true }
+  );
+  const [deleteUser] = useDeleteUserMutation();
+
   const handleGoToUserById = (id: number) => {
     // убрать replace, возможно убрать явный путь, задавать через именнованную переменную
-    navigate("/profile/:id".replace(":id", String(id)), { state: { isAdmin: true } });
+    navigate("/profile/:id".replace(":id", String(id)), { state: { isFromAdminPage: true } });
   };
 
   const handleDeleteUser = async (id: number) => {
@@ -43,7 +51,7 @@ export const UsersPage = () => {
       title: "Роли",
       dataIndex: "roles",
       key: "roles",
-      render: (roles: UserRoles[]) => {
+      render: (roles: Roles[]) => {
         if (!roles || !roles.length) {
           return null;
         }
@@ -64,7 +72,7 @@ export const UsersPage = () => {
       key: "actions",
       render: (_, record) => (
         <Flex gap="0.5rem">
-          <Button onClick={() => handleGoToUserById(record.id)}>Открыть</Button>
+          <Button onClick={() => handleGoToUserById(record.id)}>Перейти к профилю</Button>
           <Popconfirm
             title="Вы действительно хотите удаль пользователя?"
             cancelText="Отмена"
@@ -78,20 +86,36 @@ export const UsersPage = () => {
     },
   ];
 
+  const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
   if (isError) {
-    return <Alert message="Ошибка загрузки пользователей" type="error" />;
+    return <Alert message="Ошибка загрузки пользователей. Перезагрузите страницу" type="error" />;
   }
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <Flex justify="center" style={{ marginBlockStart: "1rem" }}>
         <Spin />
       </Flex>
     );
-
-  if (!data || !data.data || !data.data.length) {
-    return <Alert message="Пользователей нет" type="info" />;
   }
 
-  return <Table<UserProfile> columns={userInfoColumns} dataSource={data.data} rowKey="id" size="small" />;
+  const isUsersQueryEmpty = (!data || !data.data || !data.data.length) && !isLoading && !isFetching;
+
+  return (
+    <Flex vertical>
+      <Form>
+        <Form.Item>
+          <Input type="text" placeholder="Поиск" onChange={handleSearch} />
+        </Form.Item>
+      </Form>
+      {!isUsersQueryEmpty ? (
+        <Table<UserProfile> columns={userInfoColumns} dataSource={data.data} rowKey="id" size="small" />
+      ) : (
+        <Alert message="Пользователей нет" type="info" />
+      )}
+    </Flex>
+  );
 };

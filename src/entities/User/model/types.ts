@@ -1,4 +1,8 @@
-export type UserRoles = "ADMIN" | "MODERATOR" | "USER";
+export enum Roles {
+  ADMIN = "ADMIN",
+  MODERATOR = "MODERATOR",
+  USER = "USER",
+}
 
 export interface UserProfile {
   id: number;
@@ -6,6 +10,6 @@ export interface UserProfile {
   email: string;
   date: string;
   isBlocked: boolean;
-  roles: UserRoles[];
+  roles: Roles[];
   phoneNumber: string;
 }
