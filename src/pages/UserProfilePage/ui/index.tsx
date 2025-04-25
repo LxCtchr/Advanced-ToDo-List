@@ -41,7 +41,7 @@ export const UserProfilePage = () => {
       </Flex>
     );
 
-  if (!user) return <Alert message="Ошибка загрузки профиля" type="error" />;
+  if (!user) return <Alert message="Ошибка загрузки профиля. Попробуйте перезагрузисть страницу." type="error" />;
 
   const isAdminProfilePage = id === String(currentUser?.id);
 

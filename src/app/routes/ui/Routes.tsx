@@ -34,7 +34,7 @@ export const router = createBrowserRouter([
         element: <TodoListPage />,
       },
       {
-        path: "admin/users",
+        path: "/admin/users",
         element: <UsersPage />,
       },
     ],
