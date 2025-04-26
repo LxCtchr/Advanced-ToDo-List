@@ -1,3 +1,5 @@
+import { Roles } from "@/entities";
+
 export interface MetaResponse<T> {
   data: T[];
   meta: {
@@ -20,4 +22,8 @@ export interface UserRequest {
   username?: string;
   email?: string;
   phoneNumber?: string;
+}
+
+export interface UserRolesRequest {
+  roles: Roles[];
 }

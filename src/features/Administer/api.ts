@@ -1,7 +1,7 @@
 import { baseQueryWithRefresh } from "@/app/store/model/helpers/baseQueryWithRefresh";
 import type { UserProfile } from "@/entities";
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { MetaResponse, UserFilters, UserRequest } from "./model/types";
+import { MetaResponse, UserFilters, UserRequest, UserRolesRequest } from "./model/types";
 
 export const adminApi = createApi({
   reducerPath: "adminApi",
@@ -23,7 +23,7 @@ export const adminApi = createApi({
       }),
       providesTags: () => ["administerUsers"],
     }),
-    deleteUser: build.mutation({
+    deleteUser: build.mutation<void, number>({
       query: (id) => ({
         url: `/admin/users/${id}`,
         method: "DELETE",
@@ -38,6 +38,28 @@ export const adminApi = createApi({
       }),
       invalidatesTags: ["administerUsers"],
     }),
+    editUserRights: build.mutation<void, { id: number; roles: UserRolesRequest }>({
+      query: ({ id, roles }) => ({
+        url: `/admin/users/${id}/rights`,
+        method: "PUT",
+        body: roles,
+      }),
+      invalidatesTags: ["administerUsers"],
+    }),
+    blockUser: build.mutation<void, number>({
+      query: (id) => ({
+        url: `/admin/users/${id}/block`,
+        method: "POST",
+      }),
+      invalidatesTags: ["administerUsers"],
+    }),
+    unblockUser: build.mutation<void, number>({
+      query: (id) => ({
+        url: `/admin/users/${id}/unblock`,
+        method: "POST",
+      }),
+      invalidatesTags: ["administerUsers"],
+    }),
   }),
 });
 
@@ -47,4 +69,7 @@ export const {
   useLazyGetUserByIdQuery,
   useDeleteUserMutation,
   useEditUserMutation,
+  useBlockUserMutation,
+  useUnblockUserMutation,
+  useEditUserRightsMutation,
 } = adminApi;

@@ -1,6 +1,13 @@
 import { Roles, UserProfile } from "@/entities";
-import { useDeleteUserMutation, useGetUsersQuery, UserFilters } from "@/features";
-import { useDebounce } from "@/shared";
+import {
+  useBlockUserMutation,
+  useDeleteUserMutation,
+  useEditUserRightsMutation,
+  useGetUsersQuery,
+  UserFilters,
+  useUnblockUserMutation,
+} from "@/features";
+import { useDebounce, useNotification } from "@/shared";
 import { CheckCircleOutlined, StopOutlined } from "@ant-design/icons";
 import { Alert, Button, Flex, Input, Popconfirm, Radio, Spin, Tag } from "antd";
 import Table, { ColumnsType, TablePaginationConfig } from "antd/es/table";
@@ -8,6 +15,7 @@ import { FilterValue, SorterResult } from "antd/es/table/interface";
 import { format, parseISO } from "date-fns";
 import { ChangeEvent, useState } from "react";
 import { useNavigate } from "react-router";
+import { ROLES_TEXT } from "../model/constants";
 import styles from "./UsersPage.module.css";
 
 export const UsersPage = () => {
@@ -18,6 +26,9 @@ export const UsersPage = () => {
 
   const navigate = useNavigate();
 
+  const notification = useNotification();
+
+  // Для практики свой сделал
   const debouncedQuery = useDebounce(searchQuery);
 
   // todo - сделать валидацию в редактировании пользователя
@@ -34,14 +45,42 @@ export const UsersPage = () => {
     { refetchOnMountOrArgChange: true }
   );
   const [deleteUser] = useDeleteUserMutation();
+  const [blockUser, { isLoading: isBlockLoading }] = useBlockUserMutation();
+  const [unblockUser, { isLoading: isUnblockLoading }] = useUnblockUserMutation();
+  const [editUserRoles, { isLoading: isEditUserRolesLoading }] = useEditUserRightsMutation();
 
   const handleGoToUserById = (id: number) => {
     navigate(`/profile/${id}`, { state: { isFromAdminPage: true } });
   };
 
   const handleDeleteUser = async (id: number) => {
-    // try catch
-    await deleteUser(id);
+    try {
+      await deleteUser(id).unwrap();
+    } catch {
+      notification.error({ message: "Ошибка", description: "Ошибка удаления профиля пользователя. Попробуйте позже" });
+    }
+  };
+
+  const handleManageUserStatus = async (id: number, isBanned: boolean) => {
+    try {
+      if (isBanned) {
+        await unblockUser(id).unwrap();
+      } else {
+        await blockUser(id).unwrap();
+      }
+    } catch {
+      notification.error({ message: "Ошибка", description: "Ошибка изменения статуса пользователя. Попробуйте позже" });
+    }
+  };
+
+  const handleManageUserRoles = async (record: UserProfile, role: Roles, hasRole: boolean) => {
+    const newRoles = hasRole ? record.roles.filter((r) => r !== role) : [...record.roles, role];
+    try {
+      // 405 Not Allowed - надо перепроверить как правильно передавать параметры
+      await editUserRoles({ id: record.id, roles: { roles: newRoles } }).unwrap();
+    } catch {
+      notification.error({ message: "Ошибка", description: "Ошибка изменения прав пользователя. Попробуйте позже" });
+    }
   };
 
   const userInfoColumns: ColumnsType<UserProfile> = [
@@ -94,6 +133,48 @@ export const UsersPage = () => {
       },
     },
     { title: "Номер телефона", dataIndex: "phoneNumber", key: "phoneNumber" },
+    {
+      title: "Управление",
+      dataIndex: "management",
+      key: "management",
+      render: (_, record) => {
+        const allRoles = Object.values(Roles).filter((r) => r !== "USER");
+        return (
+          <Flex vertical wrap gap="0.6rem">
+            <Popconfirm
+              title={record.isBlocked ? "Разблокировать пользователя?" : "Заблокировать пользователя?"}
+              cancelText="Отмена"
+              okText="Подтвердить"
+              onConfirm={() => handleManageUserStatus(record.id, record.isBlocked)}
+            >
+              <Button loading={record.isBlocked ? isUnblockLoading : isBlockLoading}>
+                {record.isBlocked ? "Разблокировать" : "БАН"}
+              </Button>
+            </Popconfirm>
+            {allRoles.map((role) => {
+              if (!record.roles || !record.roles.length) {
+                return null;
+              }
+              const hasRole = record.roles.includes(role);
+
+              return (
+                <Popconfirm
+                  key={role}
+                  title={`${hasRole ? "Забрать" : "Дать"} ${ROLES_TEXT[role]}?`}
+                  cancelText="Отмена"
+                  okText="Подтвердить"
+                  onConfirm={() => handleManageUserRoles(record, role, hasRole)}
+                >
+                  <Button loading={isEditUserRolesLoading}>
+                    {hasRole ? `Забрать ${ROLES_TEXT[role]}` : `Дать ${ROLES_TEXT[role]}`}
+                  </Button>
+                </Popconfirm>
+              );
+            })}
+          </Flex>
+        );
+      },
+    },
     {
       title: "Действия",
       dataIndex: "actions",

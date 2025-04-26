@@ -12,11 +12,14 @@ export { registerValidationRules } from "./Register/model/validation";
 
 export {
   adminApi,
+  useBlockUserMutation,
   useDeleteUserMutation,
   useEditUserMutation,
+  useEditUserRightsMutation,
   useGetUserByIdQuery,
   useGetUsersQuery,
   useLazyGetUserByIdQuery,
+  useUnblockUserMutation,
 } from "./Administer/api";
 export { adminReducer, setIsAdmin } from "./Administer/model/slice/adminSlice";
 export * from "./Administer/model/types";
