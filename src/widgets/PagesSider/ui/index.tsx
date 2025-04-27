@@ -1,7 +1,6 @@
 import { useAppSelector } from "@/shared";
 import { Layout, Menu } from "antd";
 import { Link } from "react-router";
-// import { PAGES } from "../model/constants";
 import styles from "./PagesSider.module.css";
 
 const { Sider } = Layout;
@@ -11,20 +10,20 @@ export const PagesSider = () => {
   const isAdmin = useAppSelector((state) => state.admin.isAdmin);
   const isModerator = useAppSelector((state) => state.admin.isModerator);
 
-  const PAGES = [
+  const pages = [
     { path: "/todo", name: "Список задач" },
     { path: `/profile/${currentUser!.id ?? ""}`, name: "Профиль" },
   ];
 
   if (isAdmin || isModerator) {
-    PAGES.push({ path: "/admin/users", name: "Пользователи" });
+    pages.push({ path: "/admin/users", name: "Пользователи" });
   }
 
   return (
     <Sider className={styles.sider}>
       <Menu
         className={styles.menu}
-        items={PAGES.map((page) => ({
+        items={pages.map((page) => ({
           key: page.path,
           label: <Link to={page.path}>{page.name}</Link>,
         }))}

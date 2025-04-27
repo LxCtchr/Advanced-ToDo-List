@@ -24,11 +24,7 @@ export const UserProfilePage = () => {
 
   const isFromAdminPage = location.state?.isFromAdminPage ?? false;
 
-  const {
-    data: userData,
-    isLoading,
-    isFetching,
-  } = useGetUserByIdQuery(id ?? "", {
+  const { data: userData, isFetching } = useGetUserByIdQuery(id ?? "", {
     refetchOnMountOrArgChange: true,
   });
   const [logout] = useLogoutMutation();
@@ -37,7 +33,7 @@ export const UserProfilePage = () => {
 
   const notification = useNotification();
 
-  if (isLoading || isFetching)
+  if (isFetching)
     return (
       <Flex justify="center" style={{ marginBlockStart: "1rem" }}>
         <Spin />

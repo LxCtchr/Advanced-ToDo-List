@@ -1,10 +1,6 @@
-export const DEFAULT_PAGE_LIMIT = 20;
+import { Roles } from "@/entities";
 
-enum Roles {
-  ADMIN = "ADMIN",
-  MODERATOR = "MODERATOR",
-  USER = "USER",
-}
+export const DEFAULT_PAGE_LIMIT = 20;
 
 export const ROLES_TEXT: Record<Exclude<Roles, Roles.USER>, string> = {
   ADMIN: "администратора",

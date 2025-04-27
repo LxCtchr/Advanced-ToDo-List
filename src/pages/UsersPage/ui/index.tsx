@@ -76,7 +76,6 @@ export const UsersPage = () => {
   const handleManageUserRoles = async (record: UserProfile, role: Roles, hasRole: boolean) => {
     const newRoles = hasRole ? record.roles.filter((r) => r !== role) : [...record.roles, role];
     try {
-      // 405 Not Allowed - надо перепроверить как правильно передавать параметры
       await editUserRoles({ id: record.id, roles: { roles: newRoles } }).unwrap();
     } catch {
       notification.error({ message: "Ошибка", description: "Ошибка изменения прав пользователя. Попробуйте позже" });
