@@ -1,4 +1,6 @@
+export { useGetUserProfileQuery, useLazyGetUserProfileQuery, useLogoutMutation, userApi } from "./Session/api";
 export { sessionService } from "./Session/model/sessionService";
+export { sessionReducer, setIsAuth, setUser } from "./Session/model/slice/sessionSlice";
 
 export {
   tasksApi,
@@ -14,6 +16,4 @@ export { TaskItem } from "./Task/ui/TaskItem";
 export { TasksFilters } from "./Task/ui/TasksFilters";
 export { TasksForm } from "./Task/ui/TasksForm";
 
-export { useGetUserProfileQuery, useLazyGetUserProfileQuery, useLogoutMutation, userApi } from "./User/api";
-export { setUser, userReducer } from "./User/model/slice/userSlice";
 export * from "./User/model/types";

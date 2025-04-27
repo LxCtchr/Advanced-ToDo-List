@@ -7,7 +7,7 @@ import {
   UserFilters,
   useUnblockUserMutation,
 } from "@/features";
-import { useDebounce, useNotification } from "@/shared";
+import { useAppSelector, useDebounce, useNotification } from "@/shared";
 import { CheckCircleOutlined, StopOutlined } from "@ant-design/icons";
 import { Alert, Button, Flex, Input, Popconfirm, Radio, Spin, Tag } from "antd";
 import Table, { ColumnsType, TablePaginationConfig } from "antd/es/table";
@@ -24,14 +24,14 @@ export const UsersPage = () => {
   const [isBlocked, setIsBlocked] = useState<boolean | null>(null);
   const [sorter, setSorter] = useState<Pick<UserFilters, "sortBy" | "sortOrder">>({});
 
+  const isAdmin = useAppSelector((state) => state.admin.isAdmin);
+
   const navigate = useNavigate();
 
   const notification = useNotification();
 
   // Для практики свой сделал
   const debouncedQuery = useDebounce(searchQuery);
-
-  // todo - сделать валидацию в редактировании пользователя
 
   const { data, isError, isLoading, isFetching } = useGetUsersQuery(
     {
@@ -84,8 +84,20 @@ export const UsersPage = () => {
   };
 
   const userInfoColumns: ColumnsType<UserProfile> = [
-    { title: "Имя", dataIndex: "username", key: "username", sorter: true },
-    { title: "Email", dataIndex: "email", key: "email", sorter: true },
+    {
+      title: "Имя",
+      dataIndex: "username",
+      key: "username",
+      sorter: true,
+      sortOrder: sorter.sortBy === "username" ? (sorter.sortOrder === "asc" ? "ascend" : "descend") : undefined,
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      sorter: true,
+      sortOrder: sorter.sortBy === "email" ? (sorter.sortOrder === "asc" ? "ascend" : "descend") : undefined,
+    },
     {
       title: "Дата регистрации",
       dataIndex: "date",
@@ -111,6 +123,7 @@ export const UsersPage = () => {
           <Radio value="blocked">Заблокирован</Radio>
         </Radio.Group>
       ),
+      filteredValue: isBlocked === null ? undefined : [isBlocked ? "blocked" : "active"],
       render: (isBlocked: boolean) =>
         isBlocked ? <StopOutlined style={{ color: "red" }} /> : <CheckCircleOutlined style={{ color: "green" }} />,
     },
@@ -151,26 +164,27 @@ export const UsersPage = () => {
                 {record.isBlocked ? "Разблокировать" : "БАН"}
               </Button>
             </Popconfirm>
-            {allRoles.map((role) => {
-              if (!record.roles || !record.roles.length) {
-                return null;
-              }
-              const hasRole = record.roles.includes(role);
+            {isAdmin &&
+              allRoles.map((role) => {
+                if (!record.roles || !Array.isArray(record.roles)) {
+                  return null;
+                }
+                const hasRole = record.roles.includes(role);
 
-              return (
-                <Popconfirm
-                  key={role}
-                  title={`${hasRole ? "Забрать" : "Дать"} ${ROLES_TEXT[role]}?`}
-                  cancelText="Отмена"
-                  okText="Подтвердить"
-                  onConfirm={() => handleManageUserRoles(record, role, hasRole)}
-                >
-                  <Button loading={isEditUserRolesLoading}>
-                    {hasRole ? `Забрать ${ROLES_TEXT[role]}` : `Дать ${ROLES_TEXT[role]}`}
-                  </Button>
-                </Popconfirm>
-              );
-            })}
+                return (
+                  <Popconfirm
+                    key={role}
+                    title={`${hasRole ? "Забрать" : "Дать"} ${ROLES_TEXT[role]}?`}
+                    cancelText="Отмена"
+                    okText="Подтвердить"
+                    onConfirm={() => handleManageUserRoles(record, role, hasRole)}
+                  >
+                    <Button loading={isEditUserRolesLoading}>
+                      {hasRole ? `Забрать ${ROLES_TEXT[role]}` : `Дать ${ROLES_TEXT[role]}`}
+                    </Button>
+                  </Popconfirm>
+                );
+              })}
           </Flex>
         );
       },
@@ -182,15 +196,16 @@ export const UsersPage = () => {
       render: (_, record) => (
         <Flex gap="0.5rem">
           <Button onClick={() => handleGoToUserById(record.id)}>Перейти к профилю</Button>
-          {/* Только для админа. Модератор не видит */}
-          <Popconfirm
-            title="Вы действительно хотите удаль пользователя?"
-            cancelText="Отмена"
-            okText="Подтвердить"
-            onConfirm={() => handleDeleteUser(record.id)}
-          >
-            <Button>Удалить</Button>
-          </Popconfirm>
+          {isAdmin && (
+            <Popconfirm
+              title="Вы действительно хотите удаль пользователя?"
+              cancelText="Отмена"
+              okText="Подтвердить"
+              onConfirm={() => handleDeleteUser(record.id)}
+            >
+              <Button>Удалить</Button>
+            </Popconfirm>
+          )}
         </Flex>
       ),
     },
@@ -226,6 +241,13 @@ export const UsersPage = () => {
     }
   };
 
+  const handleResetTable = () => {
+    setSorter({});
+    setIsBlocked(null);
+    setSearchQuery(undefined);
+    setCurrentPage(1);
+  };
+
   if (isError) {
     return <Alert message="Ошибка загрузки пользователей. Перезагрузите страницу" type="error" />;
   }
@@ -242,7 +264,12 @@ export const UsersPage = () => {
 
   return (
     <Flex vertical gap="0.4rem">
-      <Input type="text" placeholder="Поиск" onChange={handleSearch} allowClear />
+      <Flex gap="0.5rem">
+        <Input type="text" placeholder="Поиск" onChange={handleSearch} value={searchQuery} allowClear />
+        <Button type="primary" color="primary" onClick={handleResetTable}>
+          Сбросить всё
+        </Button>
+      </Flex>
       <Table<UserProfile>
         columns={userInfoColumns}
         dataSource={data?.data}

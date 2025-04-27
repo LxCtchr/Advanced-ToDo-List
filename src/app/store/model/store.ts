@@ -1,11 +1,11 @@
-import { tasksApi, userApi, userReducer } from "@/entities";
+import { sessionReducer, tasksApi, userApi } from "@/entities";
 import { adminApi, adminReducer, authApi, authReducer, registerApi } from "@/features";
 import { configureStore } from "@reduxjs/toolkit";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    user: userReducer,
+    session: sessionReducer,
     admin: adminReducer,
     [tasksApi.reducerPath]: tasksApi.reducer,
     [authApi.reducerPath]: authApi.reducer,

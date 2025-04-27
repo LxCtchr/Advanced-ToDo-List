@@ -1,10 +1,11 @@
-import { Roles, sessionService, setUser, useLazyGetUserProfileQuery } from "@/entities";
-import { setIsAdmin, setIsAuth, useRefreshTokensMutation } from "@/features";
+import { sessionService, setUser, useLazyGetUserProfileQuery } from "@/entities";
+import { setIsAuth, useRefreshTokensMutation } from "@/features";
 import { useAppDispatch, useAppSelector } from "@/shared/hooks/reduxHooks";
 import { PagesSider } from "@/widgets";
 import { Layout, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router";
+import { roleActionMap } from "../../../store";
 import styles from "./ProtectedLayout.module.css";
 
 const { Content } = Layout;
@@ -40,9 +41,12 @@ export const ProtectedLayout = () => {
 
         const userResult = await trigger().unwrap();
 
-        if (userResult.roles.includes(Roles.ADMIN)) {
-          await dispatch(setIsAdmin(true));
-        }
+        userResult.roles.forEach((role) => {
+          const actionCreator = roleActionMap[role];
+          if (actionCreator) {
+            dispatch(actionCreator(true));
+          }
+        });
 
         await dispatch(setUser(userResult));
       } catch {

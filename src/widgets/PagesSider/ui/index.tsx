@@ -7,16 +7,16 @@ import styles from "./PagesSider.module.css";
 const { Sider } = Layout;
 
 export const PagesSider = () => {
-  const currentUser = useAppSelector((state) => state.user.currentUser);
+  const currentUser = useAppSelector((state) => state.session.currentUser);
   const isAdmin = useAppSelector((state) => state.admin.isAdmin);
+  const isModerator = useAppSelector((state) => state.admin.isModerator);
 
   const PAGES = [
     { path: "/todo", name: "Список задач" },
-    // Почему через replace - убрать
-    { path: "/profile/:id".replace(":id", String(currentUser?.id)), name: "Профиль" },
+    { path: `/profile/${currentUser!.id ?? ""}`, name: "Профиль" },
   ];
 
-  if (isAdmin) {
+  if (isAdmin || isModerator) {
     PAGES.push({ path: "/admin/users", name: "Пользователи" });
   }
 

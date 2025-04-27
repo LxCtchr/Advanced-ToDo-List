@@ -1,4 +1,4 @@
-import { useNotification } from "@/shared";
+import { emailValidationRules, phoneNumberValidationRules, useNotification, usernameValidationRules } from "@/shared";
 import { Button, Flex, Form, Input } from "antd";
 import { isEqual } from "lodash";
 import { useEditUserMutation } from "../../api";
@@ -38,13 +38,13 @@ export const EditUserForm = ({ userId, initialValues, cancelEditing }: EditUserF
 
   return (
     <Form<UserRequest> initialValues={initialValues} onFinish={handleSubmitEdit}>
-      <Form.Item<UserRequest> name="username">
+      <Form.Item<UserRequest> name="username" rules={usernameValidationRules}>
         <Input />
       </Form.Item>
-      <Form.Item<UserRequest> name="email">
+      <Form.Item<UserRequest> name="email" rules={emailValidationRules}>
         <Input />
       </Form.Item>
-      <Form.Item<UserRequest> name="phoneNumber">
+      <Form.Item<UserRequest> name="phoneNumber" rules={phoneNumberValidationRules}>
         <Input />
       </Form.Item>
       <Flex gap="0.4rem">

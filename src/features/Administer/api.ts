@@ -41,7 +41,7 @@ export const adminApi = createApi({
     editUserRights: build.mutation<void, { id: number; roles: UserRolesRequest }>({
       query: ({ id, roles }) => ({
         url: `/admin/users/${id}/rights`,
-        method: "PUT",
+        method: "POST",
         body: roles,
       }),
       invalidatesTags: ["administerUsers"],

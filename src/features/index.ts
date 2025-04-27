@@ -21,6 +21,6 @@ export {
   useLazyGetUserByIdQuery,
   useUnblockUserMutation,
 } from "./Administer/api";
-export { adminReducer, setIsAdmin } from "./Administer/model/slice/adminSlice";
+export { adminReducer, setIsAdmin, setIsModerator } from "./Administer/model/slice/adminSlice";
 export * from "./Administer/model/types";
 export { EditUserForm } from "./Administer/ui/EditUserForm";

@@ -12,8 +12,11 @@ const { Title, Text } = Typography;
 export const UserProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
 
-  const currentUser = useAppSelector((state) => state.user.currentUser);
+  const currentUser = useAppSelector((state) => state.session.currentUser);
   const isAdmin = useAppSelector((state) => state.admin.isAdmin);
+  const isModerator = useAppSelector((state) => state.admin.isModerator);
+
+  const isAuthority = isAdmin || isModerator;
 
   const location = useLocation();
   const { id } = useParams<{ id: string }>();
@@ -30,7 +33,7 @@ export const UserProfilePage = () => {
   });
   const [logout] = useLogoutMutation();
 
-  const user = isAdmin ? userData : currentUser;
+  const user = isAuthority ? userData : currentUser;
 
   const notification = useNotification();
 
@@ -43,7 +46,7 @@ export const UserProfilePage = () => {
 
   if (!user) return <Alert message="Ошибка загрузки профиля. Попробуйте перезагрузисть страницу." type="error" />;
 
-  const isAdminProfilePage = id === String(currentUser?.id);
+  const isAuthorityProfilePage = id === String(currentUser?.id);
 
   const handleLogout = async () => {
     try {
@@ -87,7 +90,7 @@ export const UserProfilePage = () => {
         <>
           <Title level={2}>Профиль пользователя</Title>
 
-          {isAdmin && (
+          {isAuthority && (
             <Text className={styles.text}>
               <b>ID пользователя</b>: {user.id}
             </Text>
@@ -109,12 +112,12 @@ export const UserProfilePage = () => {
           </Text>
 
           <Flex gap="0.4rem" className={styles.buttons}>
-            {isAdmin ? (
+            {isAuthority ? (
               <>
                 <Button color="primary" variant="solid" className={styles.button} onClick={handleEditUser}>
                   Редактировать
                 </Button>
-                {isAdminProfilePage && (
+                {isAuthorityProfilePage && (
                   <Button color="primary" variant="solid" className={styles.button} onClick={handleLogout}>
                     Выйти
                   </Button>
