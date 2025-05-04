@@ -1,0 +1,8 @@
+.wrapper {
+  max-inline-size: 800px;
+  margin-inline: auto;
+}
+
+.button {
+  width: 33%;
+}

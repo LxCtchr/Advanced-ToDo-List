@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/shared";
+import { BASE_URL } from "@/shared/constants";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { AuthData, Token } from "./model/types";
 

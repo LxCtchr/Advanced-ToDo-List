@@ -1,4 +1,4 @@
-import { TasksForm } from "@/entities";
+import { TasksForm } from "@/entities/Task";
 import { Button, Flex } from "antd";
 import { memo } from "react";
 import styles from "./AddTask.module.css";

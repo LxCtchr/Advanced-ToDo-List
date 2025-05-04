@@ -1,5 +1,5 @@
-import { Filter, selectTasks, TaskItem, TasksFilters, useCreateTaskMutation, useGetTasksQuery } from "@/entities";
-import { AddTask } from "@/features";
+import { Filter, selectTasks, TaskItem, TasksFilters, useCreateTaskMutation, useGetTasksQuery } from "@/entities/Task";
+import { AddTask } from "@/features/AddTask";
 import { useNotification } from "@/shared/hooks/notificationHooks";
 import { List } from "antd";
 import { useCallback, useMemo, useState } from "react";

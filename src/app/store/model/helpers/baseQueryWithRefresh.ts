@@ -1,6 +1,8 @@
-import { sessionService, setUser } from "@/entities";
-import { authApi, setIsAuth } from "@/features";
-import { BASE_URL, defineError } from "@/shared";
+import { sessionService, setUser } from "@/entities/Session";
+import { authApi } from "@/features/Authorize/api";
+import { setIsAuth } from "@/features/Authorize/model/slice/authSlice";
+import { BASE_URL } from "@/shared/constants";
+import { defineError } from "@/shared/helpers";
 import { BaseQueryFn, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
 
 const baseQuery = fetchBaseQuery({
@@ -34,7 +36,7 @@ export const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, Fetc
 
   if (defineError(result.error) && result.error.originalStatus === 401) {
     try {
-      const refreshTokens = authApi.endpoints.refreshTokens.initiate(currentRefreshToken);
+      const refreshTokens = await authApi.endpoints.refreshTokens.initiate(currentRefreshToken);
       const newTokens = await api.dispatch(refreshTokens).unwrap();
 
       if (newTokens) {

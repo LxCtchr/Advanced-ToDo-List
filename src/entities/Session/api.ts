@@ -1,6 +1,6 @@
 import { baseQueryWithRefresh } from "@/app/store/model/helpers/baseQueryWithRefresh";
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { UserProfile } from "./model/types";
+import { UserProfile } from "../User/model/types";
 
 export const userApi = createApi({
   reducerPath: "userApi",

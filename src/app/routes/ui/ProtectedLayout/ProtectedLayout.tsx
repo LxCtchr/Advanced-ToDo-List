@@ -1,10 +1,11 @@
-import { sessionService } from "@/entities";
-import { setIsAuth, useRefreshTokensMutation } from "@/features";
+import { sessionService, setUser, useLazyGetUserProfileQuery } from "@/entities/Session";
+import { setIsAuth, useRefreshTokensMutation } from "@/features/Authorize";
 import { useAppDispatch, useAppSelector } from "@/shared/hooks/reduxHooks";
-import { PagesSider } from "@/widgets";
+import { PagesSider } from "@/widgets/PagesSider";
 import { Layout, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router";
+import { roleActionMap } from "../../../store";
 import styles from "./ProtectedLayout.module.css";
 
 const { Content } = Layout;
@@ -17,6 +18,8 @@ export const ProtectedLayout = () => {
   const dispatch = useAppDispatch();
 
   const isAuth = useAppSelector((state) => state.auth.isAuth);
+
+  const [trigger, { isLoading }] = useLazyGetUserProfileQuery();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -35,17 +38,30 @@ export const ProtectedLayout = () => {
         localStorage.setItem("refreshToken", refreshToken);
 
         await dispatch(setIsAuth(true));
+
+        const userResult = await trigger().unwrap();
+
+        userResult.roles.forEach((role) => {
+          const actionCreator = roleActionMap[role];
+          if (actionCreator) {
+            dispatch(actionCreator(true));
+          }
+        });
+
+        await dispatch(setUser(userResult));
       } catch {
         sessionService.clearTokens();
+        await dispatch(setIsAuth(false));
+        await dispatch(setUser(null));
       }
 
       setIsAppInitialized(true);
     };
 
     checkAuth();
-  }, [dispatch, refreshTokens]);
+  }, [dispatch, refreshTokens, trigger]);
 
-  if (!isAppInitialized) {
+  if (!isAppInitialized || isLoading) {
     return <Spin fullscreen />;
   }
 
@@ -54,7 +70,7 @@ export const ProtectedLayout = () => {
   }
 
   return (
-    <Layout className={styles.wrapper}>
+    <Layout className={styles.wrapper} hasSider>
       <PagesSider />
       <Content className={styles.content}>
         <Outlet />

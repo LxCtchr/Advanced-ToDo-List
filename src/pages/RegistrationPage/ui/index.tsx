@@ -1,5 +1,5 @@
-import { registerValidationRules, RegistrationFormData, useRegisterMutation } from "@/features";
-import { defineError } from "@/shared";
+import { registerValidationRules, RegistrationFormData, useRegisterMutation } from "@/features/Register";
+import { defineError } from "@/shared/helpers";
 import { useNotification } from "@/shared/hooks/notificationHooks";
 import { Button, Flex, Form, Input, Typography } from "antd";
 import { useForm } from "antd/es/form/Form";
