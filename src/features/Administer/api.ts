@@ -1,5 +1,5 @@
 import { baseQueryWithRefresh } from "@/app/store/model/helpers/baseQueryWithRefresh";
-import type { UserProfile } from "@/entities";
+import { UserProfile } from "@/entities/User";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { MetaResponse, UserFilters, UserRequest, UserRolesRequest } from "./model/types";
 
@@ -30,9 +30,9 @@ export const adminApi = createApi({
       }),
       invalidatesTags: ["administerUsers"],
     }),
-    editUser: build.mutation<UserProfile, { id: string; userData: UserRequest }>({
+    editUser: build.mutation<UserProfile, { id?: number; userData: UserRequest }>({
       query: ({ id, userData }) => ({
-        url: `/admin/users/${id}`,
+        url: `/admin/users/${id ?? ""}`,
         method: "PUT",
         body: userData,
       }),

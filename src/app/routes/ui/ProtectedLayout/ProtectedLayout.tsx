@@ -1,7 +1,7 @@
-import { sessionService, setUser, useLazyGetUserProfileQuery } from "@/entities";
-import { setIsAuth, useRefreshTokensMutation } from "@/features";
+import { sessionService, setUser, useLazyGetUserProfileQuery } from "@/entities/Session";
+import { setIsAuth, useRefreshTokensMutation } from "@/features/Authorize";
 import { useAppDispatch, useAppSelector } from "@/shared/hooks/reduxHooks";
-import { PagesSider } from "@/widgets";
+import { PagesSider } from "@/widgets/PagesSider";
 import { Layout, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router";

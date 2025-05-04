@@ -1,7 +1,7 @@
-import { UserProfile } from "@/entities";
-import { BASE_URL } from "@/shared";
+import { UserProfile } from "@/entities/User";
+import { BASE_URL } from "@/shared/constants";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { RegistrationData } from "../model/types";
+import { RegistrationData } from "./model/types";
 
 export const registerApi = createApi({
   reducerPath: "registerApi",

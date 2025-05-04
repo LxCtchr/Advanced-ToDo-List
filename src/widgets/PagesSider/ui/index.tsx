@@ -1,4 +1,4 @@
-import { useAppSelector } from "@/shared";
+import { useAppSelector } from "@/shared/hooks";
 import { Layout, Menu } from "antd";
 import { Link } from "react-router";
 import styles from "./PagesSider.module.css";

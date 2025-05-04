@@ -1,4 +1,4 @@
-import { Roles, UserProfile } from "@/entities";
+import { Roles, UserProfile } from "@/entities/User";
 import {
   useBlockUserMutation,
   useDeleteUserMutation,
@@ -6,8 +6,8 @@ import {
   useGetUsersQuery,
   UserFilters,
   useUnblockUserMutation,
-} from "@/features";
-import { useAppSelector, useDebounce, useNotification } from "@/shared";
+} from "@/features/Administer";
+import { useAppSelector, useDebounce, useNotification } from "@/shared/hooks";
 import { CheckCircleOutlined, StopOutlined } from "@ant-design/icons";
 import { Alert, Button, Flex, Input, Popconfirm, Radio, Spin, Tag } from "antd";
 import Table, { ColumnsType, TablePaginationConfig } from "antd/es/table";

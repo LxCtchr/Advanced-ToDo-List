@@ -1,5 +1,8 @@
-import { sessionReducer, tasksApi, userApi } from "@/entities";
-import { adminApi, adminReducer, authApi, authReducer, registerApi } from "@/features";
+import { sessionReducer, userApi } from "@/entities/Session";
+import { tasksApi } from "@/entities/Task";
+import { adminApi, adminReducer } from "@/features/Administer";
+import { authApi, authReducer } from "@/features/Authorize";
+import { registerApi } from "@/features/Register";
 import { configureStore } from "@reduxjs/toolkit";
 
 export const store = configureStore({

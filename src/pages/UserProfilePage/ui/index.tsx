@@ -1,6 +1,6 @@
-import { sessionService, useLogoutMutation } from "@/entities";
-import { EditUserForm, useGetUserByIdQuery, UserRequest } from "@/features";
-import { useAppSelector, useNotification } from "@/shared";
+import { sessionService, useLogoutMutation } from "@/entities/Session";
+import { EditUserForm, useGetUserByIdQuery, UserRequest } from "@/features/Administer";
+import { useAppSelector, useNotification } from "@/shared/hooks";
 import { Alert, Button, Flex, Spin, Typography } from "antd";
 import { format, parseISO } from "date-fns";
 import { useState } from "react";

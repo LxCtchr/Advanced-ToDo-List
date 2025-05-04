@@ -1,7 +1,8 @@
-import { sessionService, setUser } from "@/entities";
+import { sessionService, setUser } from "@/entities/Session";
 import { authApi } from "@/features/Authorize/api";
 import { setIsAuth } from "@/features/Authorize/model/slice/authSlice";
-import { BASE_URL, defineError } from "@/shared";
+import { BASE_URL } from "@/shared/constants";
+import { defineError } from "@/shared/helpers";
 import { BaseQueryFn, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
 
 const baseQuery = fetchBaseQuery({

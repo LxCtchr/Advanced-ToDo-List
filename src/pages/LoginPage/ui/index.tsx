@@ -1,5 +1,5 @@
-import { sessionService } from "@/entities";
-import { AuthData, authValidationRules, setIsAuth, useLoginMutation } from "@/features";
+import { sessionService } from "@/entities/Session";
+import { AuthData, authValidationRules, setIsAuth, useLoginMutation } from "@/features/Authorize";
 import { useNotification } from "@/shared/hooks/notificationHooks";
 import { useAppDispatch } from "@/shared/hooks/reduxHooks";
 import { Button, Flex, Form, Input, Typography } from "antd";

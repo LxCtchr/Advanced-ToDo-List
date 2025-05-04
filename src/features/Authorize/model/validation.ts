@@ -1,4 +1,4 @@
-import { loginValidationRules, passwordValidationRules } from "@/shared";
+import { loginValidationRules, passwordValidationRules } from "@/shared/validation";
 import { Rule } from "antd/es/form";
 import { AuthData } from "./types";
 

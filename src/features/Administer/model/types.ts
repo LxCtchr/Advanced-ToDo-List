@@ -1,4 +1,4 @@
-import { Roles } from "@/entities";
+import { Roles } from "@/entities/User";
 
 export interface MetaResponse<T> {
   data: T[];

@@ -1,4 +1,5 @@
-import { emailValidationRules, phoneNumberValidationRules, useNotification, usernameValidationRules } from "@/shared";
+import { useNotification } from "@/shared/hooks";
+import { emailValidationRules, phoneNumberValidationRules, usernameValidationRules } from "@/shared/validation";
 import { Button, Flex, Form, Input } from "antd";
 import { isEqual } from "lodash";
 import { useEditUserMutation } from "../../api";
@@ -6,7 +7,7 @@ import { getChangedValues } from "../../model/helpers";
 import { UserRequest } from "../../model/types";
 
 interface EditUserFormProps {
-  userId: string | undefined;
+  userId?: string;
   cancelEditing: () => void;
   initialValues: UserRequest;
 }
@@ -25,7 +26,7 @@ export const EditUserForm = ({ userId, initialValues, cancelEditing }: EditUserF
     try {
       const useEditData = getChangedValues({ initialValues, formValues });
 
-      await editUser({ id: userId ?? "", userData: useEditData }).unwrap();
+      await editUser({ id: Number(userId), userData: useEditData }).unwrap();
       await cancelEditing();
       notification.success({ message: "Успешно", description: "Данные пользователя успешно обновлены" });
     } catch {

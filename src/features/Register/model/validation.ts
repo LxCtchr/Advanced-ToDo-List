@@ -1,11 +1,11 @@
+import { VALIDATION_MESSAGE } from "@/shared/constants";
 import {
   emailValidationRules,
   loginValidationRules,
   passwordValidationRules,
   phoneNumberValidationRules,
   usernameValidationRules,
-  VALIDATION_MESSAGE,
-} from "@/shared";
+} from "@/shared/validation";
 import { Rule } from "antd/es/form";
 import { RegistrationFormData } from "./types";
 

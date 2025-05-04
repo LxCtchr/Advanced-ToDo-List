@@ -1,4 +1,4 @@
-import { Roles } from "@/entities";
+import { Roles } from "@/entities/User";
 
 export const DEFAULT_PAGE_LIMIT = 20;
 
