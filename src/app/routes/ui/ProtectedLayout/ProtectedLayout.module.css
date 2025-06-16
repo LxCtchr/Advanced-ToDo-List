@@ -1,0 +1,8 @@
+.content {
+  margin-inline-start: 0.4rem;
+}
+
+.wrapper {
+  max-inline-size: 80vw;
+  margin-inline: auto;
+}

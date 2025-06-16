@@ -1,54 +1,69 @@
-# React + TypeScript + Vite
+# Описание
+## Проект Advanced ToDo-List
+  - В проекте идет обращение к реальному бэкенду. (Не мок и не localStorage)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Технический стек:
+  - React, TypeScript, Redux Toolkit, antd (Ant Design), Vite, Eslint
 
-Currently, two official plugins are available:
+### В проекте реализованы следующие фичи:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. Базовый функционал списка задач:
+    - добавление новой задачи
+    - просмотр существующих задач
+    - редактирование задач
+    - удаление задач
+    - отметить задачу как выполненную / невыполненную
+    - просмотр задач по фильтрам: "Все" / "В работе" / "Сделано"  
 
-## Expanding the ESLint configuration
+   Особенности:
+    - При изменении статуса задачи изменится её отображение в фильтре. Например, если отметить задачу как выполненную она динамически пропадет из фильтра "В работе"
+    - Список задач автообновляется каждые 5 секунд
+    - Присутствует базовая валидация полей при создании и редактировании задач
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+2. Реальная авторизация и регистрация
+    - Работа с токенами обновления и доступа (accessToken / refreshToken)
+    - Добавление валидация полей регистрации и авторизации
+    - Добавлена страница профиля пользователя с соответствующей информацией
+    - В профиле есть возможность выйти / разлогиниться
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
+   Особенности:
+     - Если токен обновления не просрочен, то пользователь восстанавливает токен доступа и остается на целевой странице. Если токен обновления просрочен, то пользователь перенаправляется на страницу авторизации, токен обновления удаляется
+
+3. Страница администратора
+     - При авторизации под профилем администратора появляется возможность управления пользователями, которые были зарегистрированы на сайте
+     - Администратор имеет возможность перейти на страницу со списком профилей. Данная страница представляет собой таблицу с данными пользователей: имя, email, дата регистрации, статус (заблокирован/не заблокирован), роли (user, admin, moderator), номер телефона, действия (перейти к профилю, удалить)
+     - Администратор имеет возможность перейти в профиль пользователя и отредактировать его данные
+     - Администратор имеет возможность удалить пользователя
+     - Администратор имеет возможность дать или отобрать различные роли пользователя
+     - Администратор имеет возможность заблокировать или разблокировать пользователя
+
+    Особенности:
+       - Добавлена пагинация (если в системе больше 20 пользователей) для постраничного просмотра таблицы пользователей
+
+4. Сортировка, поиск и фильтрация на странцие администратора
+     - Администратор имеет возможность искать пользователей по имени и email-у через инпут поиска. Только найденые пользователи отображаются в таблице.
+     - Администратор имеет возможность фильтровать пользовтелей по статусу (заблокирован/не заблокирован)
+     - Администратор имеет возможность сортировать пользователей по имени и email-у
+
+### Технические особенности
+1. В качестве UI-библиотеки была использована antd (Ant Design). Максимально возможно были использованы компоненты данной библиотеки. Валидация полей и форм также была добавлена возможностями antd.
+2. Все важные подтвержения и обработка серверных ошибок сопровождаются диалоговыми и всплывающими окнами. (Подтвержения на удаление, блокировку, переход при регистрации и так далее)
+3. В проекте используется менеджер состояния Redux Toolkit. Реализованы 3 слайса: для текущей сессии, для авторизации, для админки
+4. Для запросов используется RTK Query. Для работы с авторизацией и токенами была реализована специальная обертка над baseQuery
+5. Для навигации по страницам используется React Router. С его помощью реализованы защищенные слои, чтобы неавторизованный пользователь не смог увидеть контент, который предназначен только для авторизованных пользователей.
+6. В проекте настроен typecheck через tsc и линтинг через eslint
+
+## Установка
+Установите зависимости:
 ```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    "react-x": reactX,
-    "react-dom": reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs["recommended-typescript"].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-});
+npm install
+```
+## Запуск в dev-режиме
+```
+npm run dev
+```
+## Билд в прод
+По умолчанию билд производится в папку `/dist`
+```
+npm run build
 ```
